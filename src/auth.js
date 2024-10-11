@@ -1,7 +1,25 @@
 // src/auth.js
-import { auth } from './firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth ,db } from './firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut , getAuth, onAuthStateChanged } from 'firebase/auth';
 
+
+const auth = getAuth();
+
+// Listen for authentication state changes
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    // User is signed in, save email and uid in Firestore
+    try {
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        uid: user.uid
+      }, { merge: true });
+      console.log('User data saved successfully');
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
+  }
+});
 // Register User
 const register = async (email, password) => {
   try {

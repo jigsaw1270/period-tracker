@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { auth, db } from './firebase';  // Firebase auth and Firestore
-import { doc, setDoc } from 'firebase/firestore';  // Firestore methods
+import { doc, setDoc } from 'firebase/firestore';  // Firestore functions
 
 const CalendarPage = () => {
   const [date, setDate] = useState(new Date());  // State to track selected date
@@ -13,9 +13,10 @@ const CalendarPage = () => {
     const user = auth.currentUser;
     if (user) {
       try {
+        // Update the periodStartDate in the user's document
         await setDoc(doc(db, 'users', user.uid), {
           periodStartDate: date,
-        });
+        }, { merge: true });  // 'merge: true' ensures other fields are not overwritten
         alert('Date saved successfully');
       } catch (error) {
         alert('Error saving date: ' + error.message);
