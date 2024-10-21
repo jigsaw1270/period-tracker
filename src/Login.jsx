@@ -1,5 +1,5 @@
 // src/Auth.js
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { register, login } from './auth';
 
 const Login = () => {

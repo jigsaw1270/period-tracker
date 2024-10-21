@@ -1,9 +1,10 @@
 // src/auth.js
+import { doc, setDoc } from 'firebase/firestore';
 import { auth ,db } from './firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut , getAuth, onAuthStateChanged } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut ,  onAuthStateChanged } from 'firebase/auth';
 
 
-const auth = getAuth();
+// const auth = getAuth();
 
 // Listen for authentication state changes
 onAuthStateChanged(auth, async (user) => {
