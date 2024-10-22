@@ -1,25 +1,46 @@
 // src/CalendarPage.js
-import  { useState } from 'react';
+import  React ,{ useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { auth, db } from './firebase';  // Firebase auth and Firestore
 import { doc, setDoc } from 'firebase/firestore';  // Firestore functions
 import { logout } from './auth'; 
+
 const CalendarPage = () => {
   const [date, setDate] = useState(new Date());  // State to track selected date
 
-  // Function to save the selected date in Firestore
+  // Function to save the selected date in Firestore and send a reminder email
   const handleDateSelect = async (date) => {
     const user = auth.currentUser;
     if (user) {
       try {
-        // Update the periodStartDate in the user's document
+        // Update the periodStartDate in the user's document in Firestore
         await setDoc(doc(db, 'users', user.uid), {
           periodStartDate: date,
         }, { merge: true });  // 'merge: true' ensures other fields are not overwritten
+
         alert('Date saved successfully');
+
+        // Send a reminder email after saving the date in Firestore
+        const response = await fetch('http://localhost:5000/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: user.email,  // Use the current user's email
+            periodStartDate: date.toDateString(),  // Pass the selected date
+          }),
+        });
+
+        if (response.ok) {
+          alert('Reminder email scheduled successfully');
+        } else {
+          alert('Failed to schedule reminder email');
+        }
+
       } catch (error) {
-        alert('Error saving date: ' + error.message);
+        alert('Error saving date or sending email: ' + error.message);
       }
     }
   };
