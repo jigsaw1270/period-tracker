@@ -9,8 +9,8 @@ const db = _firestore();
 const transporter = createTransport({
   service: 'gmail',
   auth: {
-    user: 'mahmudul@bluebnc.com',   // Replace with your Gmail address
-    pass: 'Blue2024!',    // Replace with your Gmail password
+    user: USER,   // Replace with your Gmail address
+    pass: PASS,    // Replace with your Gmail password
   },
 });
 
